@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>قائمة المستخدمين</title>
+</head>
+<body>
+    <h2>قائمة المستخدمين</h2>
+    {% if users %}
+    <table border="1">
+        <tr>
+            <th>البريد الإلكتروني</th>
+            <th>IP</th>
+            <th>وقت التسجيل</th>
+        </tr>
+        {% for email, ip, created_at in users %}
+        <tr>
+            <td>{{ email }}</td>
+            <td>{{ ip }}</td>
+            <td>{{ created_at }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>لا يوجد مستخدمون بعد.</p>
+    {% endif %}
+</body>
+</html>

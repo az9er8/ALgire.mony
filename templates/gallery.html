@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>معرض الصور</title>
+</head>
+<body>
+    <h2>مرحباً {{ email }}</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <label>اختر صورًا لرفعها:</label><br>
+        <input type="file" name="images" multiple><br><br>
+        <button type="submit">رفع الصور</button>
+    </form>
+    <h3>صورك:</h3>
+    {% for image in images %}
+        <img src="{{ url_for('uploaded_file', email=email, filename=image) }}" width="150">
+    {% endfor %}
+</body>
+</html>
