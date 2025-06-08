@@ -1,19 +1,66 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>معرض الصور</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            width: 100%;
+        }
+        button {
+            padding: 10px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .gallery img {
+            width: 100%;
+            max-width: 180px;
+            border-radius: 8px;
+        }
+        @media (max-width: 600px) {
+            .gallery img {
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h2>مرحباً {{ email }}</h2>
-    <form method="POST" enctype="multipart/form-data">
-        <label>اختر صورًا لرفعها:</label><br>
-        <input type="file" name="images" multiple><br><br>
-        <button type="submit">رفع الصور</button>
-    </form>
-    <h3>صورك:</h3>
-    {% for image in images %}
-        <img src="{{ url_for('uploaded_file', email=email, filename=image) }}" width="150">
-    {% endfor %}
+    <div class="container">
+        <h2>مرحبًا، {{ email }}</h2>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="images" multiple required>
+            <button type="submit">رفع الصور</button>
+        </form>
+        <div class="gallery">
+            {% for image in images %}
+                <img src="{{ url_for('uploaded_file', email=email, filename=image) }}" alt="صورة">
+            {% endfor %}
+        </div>
+    </div>
 </body>
 </html>
