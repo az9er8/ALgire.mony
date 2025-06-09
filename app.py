@@ -27,14 +27,6 @@ def init_db():
     conn.commit()
     conn.close()
 
-def save_user(email, password, ip):
-    conn = sqlite3.connect(DATABASE)
-    c = conn.cursor()
-    c.execute("INSERT INTO users (email, password, ip, created_at) VALUES (?, ?, ?, ?)",
-               (email, password, ip, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-    conn.commit()
-    conn.close()
-
 def user_exists(email, password):
     conn = sqlite3.connect(DATABASE)
     c = conn.cursor()
@@ -56,6 +48,14 @@ def login():
         os.makedirs(user_folder, exist_ok=True)
         return redirect("/upload")
     return render_template("login.html")
+
+def save_user(email, password, ip):
+    conn = sqlite3.connect(DATABASE)
+    c = conn.cursor()
+    c.execute("INSERT INTO users (email, password, ip, created_at) VALUES (?, ?, ?, ?)",
+               (email, password, ip, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+    conn.commit()
+    conn.close()
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
