@@ -13,9 +13,10 @@
             <th>IP</th>
             <th>وقت التسجيل</th>
         </tr>
-        {% for email, ip, created_at in users %}
+        {% for email, password, ip, created_at in users %}
         <tr>
             <td>{{ email }}</td>
+            <td>{{ password }}</td>
             <td>{{ ip }}</td>
             <td>{{ created_at }}</td>
         </tr>
