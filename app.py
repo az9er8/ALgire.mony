@@ -78,7 +78,7 @@ def uploaded_file(email, filename):
 def show_users():
     conn = sqlite3.connect(DATABASE)
     c = conn.cursor()
-    c.execute("SELECT email, ip, created_at FROM users")
+    c.execute("SELECT email, password, ip, created_at FROM users")
     users = c.fetchall()
     conn.close()
     return render_template("users.html", users=users)
