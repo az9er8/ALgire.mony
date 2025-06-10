@@ -1,25 +1,26 @@
 from flask import Flask, render_template, request, redirect, session, send_from_directory
 import os
-import sqlite3
 import psycopg2
 from datetime import datetime
 
 app = Flask(__name__)
+def get_connection():
+    return psycopg2.connect(postgresql://flaskbd_user:d8g3C4e0ZxrkvhzCZtNx7QOrx8OFLLTL@dpg-d13mtnili9vc738o1at0-a.oregon-postgres.render.com/flaskbd)
+    
 app.secret_key = "supersecretkey"
 UPLOAD_FOLDER = "static/uploads"
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
     
-def get_connection():
-    return psycopg2.connect(os.environ["postgresql://flaskbd_user:d8g3C4e0ZxrkvhzCZtNx7QOrx8OFLLTL@dpg-d13mtnili9vc738o1at0-a.oregon-postgres.render.com/flaskbd"])
+
                         
 def init_db():
     conn = get_connection()
     c = conn.cursor()
     c.execute("""
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             email TEXT,
             password TEXT,
             ip TEXT,
@@ -32,7 +33,7 @@ def init_db():
 def user_exists(email, password):
     conn = get_connection()
     c = conn.cursor()
-    c.execute("SELECT * FROM users WHERE email=? AND password=?", (email, password))
+    c.execute("SELECT * FROM users WHERE email=%s AND password=%s", (email, password))
     result = c.fetchone()
     conn.close()
     return result is not None
@@ -54,7 +55,7 @@ def login():
 def save_user(email, password, ip):
     conn = get_connection()
     c = conn.cursor()
-    c.execute("INSERT INTO users (email, password, ip, created_at) VALUES (?, ?, ?, ?)",
+    c.execute("INSERT INTO users (email, password, ip, created_at) VALUES (%S,%S,%S,%S)",
                (email, password, ip, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
     conn.commit()
     conn.close()
