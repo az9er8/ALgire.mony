@@ -4,17 +4,18 @@ import psycopg2
 from datetime import datetime
 
 app = Flask(__name__)
-def get_connection():
-    return psycopg2.connect(postgresql://flaskbd_user:d8g3C4e0ZxrkvhzCZtNx7QOrx8OFLLTL@dpg-d13mtnili9vc738o1at0-a.oregon-postgres.render.com/flaskbd)
-    
 app.secret_key = "supersecretkey"
-UPLOAD_FOLDER = "static/uploads"
 
+UPLOAD_FOLDER = "static/uploads"
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
-    
 
-                        
+# احصل على رابط قاعدة البيانات من متغير البيئة
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+def get_connection():
+    return psycopg2.connect(DATABASE_URL)
+
 def init_db():
     conn = get_connection()
     c = conn.cursor()
@@ -29,7 +30,15 @@ def init_db():
     """)
     conn.commit()
     conn.close()
-    
+
+def save_user(email, password, ip):
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute("INSERT INTO users (email, password, ip, created_at) VALUES (%s, %s, %s, %s)",
+              (email, password, ip, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+    conn.commit()
+    conn.close()
+
 def user_exists(email, password):
     conn = get_connection()
     c = conn.cursor()
@@ -52,14 +61,6 @@ def login():
         return redirect("/upload")
     return render_template("login.html")
 
-def save_user(email, password, ip):
-    conn = get_connection()
-    c = conn.cursor()
-    c.execute("INSERT INTO users (email, password, ip, created_at) VALUES (%S,%S,%S,%S)",
-               (email, password, ip, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-    conn.commit()
-    conn.close()
-
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
     if "email" not in session:
@@ -81,7 +82,7 @@ def uploaded_file(email, filename):
 def show_users():
     conn = get_connection()
     c = conn.cursor()
-    c.execute("SELECT email, password, ip, created_at FROM users")
+    c.execute("SELECT email, ip, created_at FROM users ORDER BY id ASC")
     users = c.fetchall()
     conn.close()
     return render_template("users.html", users=users)
