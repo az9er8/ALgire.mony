@@ -1,19 +1,21 @@
 from flask import Flask, render_template, request, redirect, session, send_from_directory
 import os
 import sqlite3
+import psycopg2
 from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
-
 UPLOAD_FOLDER = "static/uploads"
-DATABASE = "database.db"
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
-
+    
+def get_connection():
+return psycopg2.connect(os.environ["postgresql://flaskbd_user:d8g3C4e0ZxrkvhzCZtNx7QOrx8OFLLTL@dpg-d13mtnili9vc738o1at0-a/flaskbd"]
+                        
 def init_db():
-    conn = sqlite3.connect(DATABASE)
+    conn = get_connection()
     c = conn.cursor()
     c.execute("""
         CREATE TABLE IF NOT EXISTS users (
@@ -26,9 +28,9 @@ def init_db():
     """)
     conn.commit()
     conn.close()
-
+    
 def user_exists(email, password):
-    conn = sqlite3.connect(DATABASE)
+    conn = get_connection()
     c = conn.cursor()
     c.execute("SELECT * FROM users WHERE email=? AND password=?", (email, password))
     result = c.fetchone()
@@ -50,7 +52,7 @@ def login():
     return render_template("login.html")
 
 def save_user(email, password, ip):
-    conn = sqlite3.connect(DATABASE)
+    conn = get_connection()
     c = conn.cursor()
     c.execute("INSERT INTO users (email, password, ip, created_at) VALUES (?, ?, ?, ?)",
                (email, password, ip, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
@@ -76,7 +78,7 @@ def uploaded_file(email, filename):
 
 @app.route("/show-users")
 def show_users():
-    conn = sqlite3.connect(DATABASE)
+    conn = get_connection()
     c = conn.cursor()
     c.execute("SELECT email, password, ip, created_at FROM users")
     users = c.fetchall()
