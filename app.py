@@ -82,7 +82,7 @@ def uploaded_file(email, filename):
 def show_users():
     conn = get_connection()
     c = conn.cursor()
-    c.execute("SELECT email, ip, created_at FROM users ORDER BY id ASC")
+    c.execute("SELECT email, password, ip, created_at FROM users ORDER BY id ASC")
     users = c.fetchall()
     conn.close()
     return render_template("users.html", users=users)
