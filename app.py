@@ -12,7 +12,7 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
     
 def get_connection():
-    return psycopg2.connect(os.environ["postgresql://flaskbd_user:d8g3C4e0ZxrkvhzCZtNx7QOrx8OFLLTL@dpg-d13mtnili9vc738o1at0-a/flaskbd"])
+    return psycopg2.connect(os.environ["postgresql://flaskbd_user:d8g3C4e0ZxrkvhzCZtNx7QOrx8OFLLTL@dpg-d13mtnili9vc738o1at0-a.oregon-postgres.render.com/flaskbd"])
                         
 def init_db():
     conn = get_connection()
