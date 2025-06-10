@@ -12,7 +12,7 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
     
 def get_connection():
-return psycopg2.connect(os.environ["DATABASE_URL"]
+return psycopg2.connect(os.environ["DATABASE_URL"])
                         
 def init_db():
     conn = get_connection()
